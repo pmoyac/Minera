@@ -1,0 +1,9 @@
+dominio\Material.class
+dominio\Vehiculo.class
+dominio\Usuario.class
+minera\minera\JakartaRestConfiguration.class
+dominio\Notificacion.class
+minera\minera\resources\JakartaEE10Resource.class
+dominio\Semaforo.class
+dominio\Congestion.class
+dominio\ReporteMaterial.class
