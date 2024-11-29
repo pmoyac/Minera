@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/styles.css">
+    <title>Registrar Vehículo</title>
+    <script>
+        async function registrarVehiculo() {
+            const posicionActual = document.getElementById("posicionactual").value;
+            const estado = document.getElementById("estado").value;
+
+            const response = await fetch('/api/vehiculos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ marca, modelo, anio })
+            });
+
+            if (response.ok) {
+                alert("Vehículo registrado exitosamente");
+                document.getElementById("vehiculoForm").reset();
+            } else {
+                alert("Error al registrar el vehículo");
+            }
+        }
+    </script>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Inicio</a>
+        <a href="vehiculos.html">Registrar Vehículo</a>
+    </nav>
+    <h1>Registrar Vehículo</h1>
+    <form id="vehiculoForm" onsubmit="event.preventDefault(); registrarVehiculo();">
+        <label for="posicionactual">Posición Actual:</label>
+        <input type="text" id="posicionactual" required><br><br>
+
+        <label for="estado">Estado:</label>
+        <input type="text" id="estado" required><br><br>
+
+        <button type="submit">Registrar</button>
+    </form>
+</body>
+</html>
