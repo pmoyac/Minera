@@ -26,24 +26,29 @@ public class Usuario implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idusuario;
 
-    @Column(name = "nombre", nullable = false, length = 50)
+    @Column(name = "nombre", nullable = true, length = 50)
     private String nombre;
     
     @Column(name = "pass", nullable = false, length = 100)
     private String pass;
     
-    @Column(name = "correo", nullable = false, length = 50)
-    private String correo;
+   
 
     public Usuario() {
     }
 
-    public Usuario(Long idusuario, String nombre, String pass, String correo) {
+    public Usuario(Long idusuario, String nombre, String pass) {
         this.idusuario = idusuario;
         this.nombre = nombre;
         this.pass = pass;
-        this.correo = correo;
     }
+
+    public Usuario(String nombre, String pass) {
+        this.nombre = nombre;
+        this.pass = pass;
+    }
+    
+    
 
     public Long getIdusuario() {
         return idusuario;
@@ -68,23 +73,11 @@ public class Usuario implements Serializable {
     public void setPass(String pass) {
         this.pass = pass;
     }
-    
-    public String getCorreo() {
-        return correo;
+
+    @Override
+    public String toString() {
+        return "Usuario{" + "idusuario=" + idusuario + ", nombre=" + nombre + ", pass=" + pass + '}';
     }
-
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
-
-    
-    
-    
-    
-    
-
-    
-
     
     
 }

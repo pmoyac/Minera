@@ -11,6 +11,7 @@ import dominio.Usuario;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import org.mindrot.jbcrypt.BCrypt;
 import jwt.JwtUtil;
 import token.TokenResponse;
@@ -18,15 +19,17 @@ import token.TokenResponse;
 @Path("auth")
 public class UsuarioAuthController {
 
-    @PersistenceContext
+    @PersistenceContext(unitName = "miUnidadDePersistencia")
     private EntityManager entityManager;
 
     @POST
     @Path("register")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)    
+    @Transactional  // Esto indica que el contenedor manejará la transacción
     public Response register(Usuario usuario) {
         
         try {
+         
         Usuario existingUser  = entityManager.createQuery("SELECT u FROM Usuario u WHERE u.nombre = :nombre", Usuario.class)
                 .setParameter("nombre", usuario.getNombre())
                 .getSingleResult();
@@ -39,23 +42,25 @@ public class UsuarioAuthController {
         // Cifrar la contraseña
         String hashedPassword = BCrypt.hashpw(usuario.getPass(), BCrypt.gensalt());
         usuario.setPass(hashedPassword);
-
+        System.out.println("Nombre :"+usuario.getNombre());
         // Guardar el usuario en la base de datos
         entityManager.persist(usuario);
+        
+    
         return Response.status(Response.Status.CREATED).entity("Usuario registrado exitosamente").build();
     }
 
     @POST
     @Path("login")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)  
     public Response login(Usuario usuario) {
         try{
         Usuario existingUser  = entityManager.createQuery("SELECT u FROM Usuario u WHERE u.nombre = :nombre", Usuario.class)
                 .setParameter("nombre", usuario.getNombre())
                 .getSingleResult();
         if (existingUser  != null && BCrypt.checkpw(usuario.getPass(), existingUser .getPass())) {
-            String token = JwtUtil.generateToken(existingUser .getNombre());
+            String token = JwtUtil.generateToken(existingUser.getNombre());
                 return Response.ok().entity(new TokenResponse(token)).build();
             } else {
                 return Response.status(Response.Status.UNAUTHORIZED).entity("Credenciales inválidas").build();

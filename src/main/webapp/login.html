@@ -27,12 +27,12 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            fetch('/api/auth/login', {
+            fetch('api/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ nombre: username, pass: password })
             })
             .then(response => {
                 if (response.ok) {
