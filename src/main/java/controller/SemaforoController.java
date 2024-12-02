@@ -1,0 +1,73 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package controller;
+
+import dominio.Semaforo;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+
+import java.util.List;
+
+@Path("/semaforos")
+public class SemaforoController {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response createSemaforo(Semaforo semaforo) {
+        entityManager.persist(semaforo);
+        return Response.status(Response.Status.CREATED).entity(semaforo).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Semaforo> getAllSemaforos() {
+        return entityManager.createQuery("SELECT v FROM Semaforo v", Semaforo.class).getResultList();
+    }
+
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSemaforo(@PathParam("id") Long id) {
+        Semaforo semaforo = entityManager.find(Semaforo.class, id);
+        if (semaforo == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(semaforo).build();
+    }
+
+    @PUT
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response updateSemaforo(@PathParam("id") Long id, Semaforo semaforo) {
+        Semaforo existingSemaforo = entityManager.find(Semaforo.class, id);
+        if (existingSemaforo == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        existingSemaforo.setEstado(semaforo.getEstado());
+        existingSemaforo.setPosicionGeografica(semaforo.getPosicionGeografica());
+        return Response.ok(existingSemaforo).build();
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @Transactional
+    public Response deleteSemaforo(@PathParam("id") Long id) {
+        Semaforo semaforo = entityManager.find(Semaforo.class, id);
+        if (semaforo == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        entityManager.remove(semaforo);
+        return Response.noContent().build();
+    }
+}
