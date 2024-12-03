@@ -92,6 +92,9 @@ public class ReporteMaterial implements Serializable {
     public void setMaterial(Material material) {
         this.material = material;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "ReporteMaterial{" + "fechaHoraMaterial=" + fechaHoraMaterial + ", cantidadMaterial=" + cantidadMaterial + ", vehiculo=" + vehiculo + ", material=" + material + '}';
+    }
 }

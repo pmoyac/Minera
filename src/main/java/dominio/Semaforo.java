@@ -63,9 +63,10 @@ public class Semaforo implements Serializable {
     public void setPosicionGeografica(String posicionGeografica) {
         this.posicionGeografica = posicionGeografica;
     }
-    
-    
-    
-    
+
+    @Override
+    public String toString() {
+        return "Semaforo{" + "estado=" + estado + ", posicionGeografica=" + posicionGeografica + '}';
+    }
     
 }

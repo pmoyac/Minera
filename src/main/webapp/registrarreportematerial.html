@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Reporte de Material</title>
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+    <nav>
+            <a href="index.html">Inicio</a>
+            <a href="registrarcongestion.html">Registrar Congestión</a>
+            <a href="congestion.html"> Consultar Congestiones </a>
+            <a href="registrarreportematerial.html"> Registrar Reporte Material </a>
+            <a href="reportematerial.html"> Consultar Reporte Material </a>
+        </nav>
+    <h1>Registrar Reporte de Material</h1>
+    <form id="reporteMaterialForm">
+        <label for="fechaHoraMaterial">Fecha y Hora:</label>
+        <input type="datetime-local" id="fechaHoraMaterial" name="fechaHoraMaterial" required>
+
+        <label for="cantidadMaterial">Cantidad de Material:</label>
+        <input type="number" id="cantidadMaterial" name="cantidadMaterial" required>
+
+        <label for="vehiculo">Vehículo:</label>
+        <select id="vehiculo" name="vehiculo" required>
+            <option value="">Seleccione un vehículo</option>
+            <!-- Las opciones de vehículos se agregarán aquí dinámicamente -->
+        </select>
+
+        <label for="material">Material:</label>
+        <select id="material" name="material" required>
+            <option value="">Seleccione un material</option>
+            <!-- Las opciones de materiales se agregarán aquí dinámicamente -->
+        </select>
+
+        <button type="submit">Registrar Reporte de Material</button>
+    </form>
+
+
+    <script>
+        function loadVehiculos() {
+            fetch('api/vehiculos') 
+                .then(response => response.json())
+                .then(data => {
+                    const vehiculoSelect = document.getElementById('vehiculo');
+                    data.forEach(vehiculo => {
+                        const option = document.createElement('option');
+                        option.value = vehiculo.idvehiculo;
+                        option.textContent = `ID: ${vehiculo.idvehiculo} - Posición: ${vehiculo.posicionActual} - Estado: ${vehiculo.estado}`;
+                        vehiculoSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error al cargar los vehículos:', error));
+        }
+
+        
+        function loadMateriales() {
+            fetch('api/materiales')
+                .then(response => response.json())
+                .then(data => {
+                    const materialSelect = document.getElementById('material');
+                    data.forEach(material => {
+                        const option = document.createElement('option');
+                        option.value = material.idmaterial;
+                        option.textContent = `ID: ${material.idmaterial} - Material: ${material.material}`;
+                        materialSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error al cargar los materiales:', error));
+        }
+
+        window.onload = function() {
+            loadVehiculos();
+            loadMateriales();
+        };
+
+        document.getElementById('reporteMaterialForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const fechaHoraMaterial = document.getElementById('fechaHoraMaterial').value;
+            const cantidadMaterial = document.getElementById('cantidadMaterial').value;
+            const vehiculo = document.getElementById('vehiculo').value;
+            const material = document.getElementById('material').value;
+
+            fetch('api/reportematerial', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    fechaHoraMaterial: fechaHoraMaterial,
+                    cantidadMaterial: cantidadMaterial,
+                    vehiculo: { id: vehiculo },
+                    material: { id: material }
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Reporte de material registrado exitosamente');
+                    document.getElementById('reporteMaterialForm').reset();
+                } else {
+                    alert('Error al registrar el reporte de material');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

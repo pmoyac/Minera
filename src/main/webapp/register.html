@@ -27,7 +27,7 @@
                 const username = document.getElementById('username').value.trim();
                 const password = document.getElementById('password').value.trim();
 
-                console.log('Nombre de usuario:', username);  // Esto te mostrará el valor del campo username en la consola
+                console.log('Nombre de usuario:', username);
                 fetch('api/auth/register', {
                     method: 'POST',
                     headers: {
@@ -36,7 +36,7 @@
                     body: JSON.stringify({nombre: username, pass: password})
                 })
                         .then(async response => {
-                            const responseBody = await response.text(); // Leer la respuesta completa
+                            const responseBody = await response.text();
                             console.log('Estado:', response.status);
                             console.log('Cuerpo:', responseBody);
 

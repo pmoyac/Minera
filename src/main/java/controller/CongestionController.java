@@ -9,10 +9,13 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.util.List;
+import jwt.JwtUtil;
 
 @Path("/congestiones")
 public class CongestionController {
@@ -23,7 +26,11 @@ public class CongestionController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response createCongestion(Congestion congestion) {
+    public Response createCongestion(Congestion congestion, @Context HttpHeaders headers) {
+        String token = headers.getHeaderString("Authorization");
+        if (token == null || !JwtUtil.validateToken(token.replace("Bearer ", ""))) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Token inválido").build();
+        }
         entityManager.persist(congestion);
         return Response.status(Response.Status.CREATED).entity(congestion).build();
     }
@@ -49,7 +56,11 @@ public class CongestionController {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response updateCongestion(@PathParam("id") Long id, Congestion congestion) {
+    public Response updateCongestion(@PathParam("id") Long id, Congestion congestion, @Context HttpHeaders headers) {
+        String token = headers.getHeaderString("Authorization");
+        if (token == null || !JwtUtil.validateToken(token.replace("Bearer ", ""))) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Token inválido").build();
+        }
         Congestion existingCongestion = entityManager.find(Congestion.class, id);
         if (existingCongestion == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -66,7 +77,11 @@ public class CongestionController {
     @DELETE
     @Path("/{id}")
     @Transactional
-    public Response deleteCongestion(@PathParam("id") Long id) {
+    public Response deleteCongestion(@PathParam("id") Long id, @Context HttpHeaders headers) {
+        String token = headers.getHeaderString("Authorization");
+        if (token == null || !JwtUtil.validateToken(token.replace("Bearer ", ""))) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Token inválido").build();
+        }
         Congestion congestion = entityManager.find(Congestion.class, id);
         if (congestion == null) {
             return Response.status(Response.Status.NOT_FOUND).build();

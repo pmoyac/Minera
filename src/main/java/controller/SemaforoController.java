@@ -9,10 +9,12 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
 import java.util.List;
+import jwt.JwtUtil;
 
 @Path("/semaforos")
 public class SemaforoController {
@@ -23,7 +25,12 @@ public class SemaforoController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response createSemaforo(Semaforo semaforo) {
+    public Response createSemaforo(Semaforo semaforo, @Context HttpHeaders headers) {
+        
+        String token = headers.getHeaderString("Authorization");
+        if (token == null || !JwtUtil.validateToken(token.replace("Bearer ", ""))) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Token inválido").build();
+        }
         entityManager.persist(semaforo);
         return Response.status(Response.Status.CREATED).entity(semaforo).build();
     }
@@ -49,7 +56,13 @@ public class SemaforoController {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response updateSemaforo(@PathParam("id") Long id, Semaforo semaforo) {
+    public Response updateSemaforo(@PathParam("id") Long id, Semaforo semaforo, @Context HttpHeaders headers) {
+        
+        String token = headers.getHeaderString("Authorization");
+        if (token == null || !JwtUtil.validateToken(token.replace("Bearer ", ""))) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Token inválido").build();
+        }
+        
         Semaforo existingSemaforo = entityManager.find(Semaforo.class, id);
         if (existingSemaforo == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -62,7 +75,11 @@ public class SemaforoController {
     @DELETE
     @Path("/{id}")
     @Transactional
-    public Response deleteSemaforo(@PathParam("id") Long id) {
+    public Response deleteSemaforo(@PathParam("id") Long id, @Context HttpHeaders headers) {
+        String token = headers.getHeaderString("Authorization");
+        if (token == null || !JwtUtil.validateToken(token.replace("Bearer ", ""))) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Token inválido").build();
+        }
         Semaforo semaforo = entityManager.find(Semaforo.class, id);
         if (semaforo == null) {
             return Response.status(Response.Status.NOT_FOUND).build();

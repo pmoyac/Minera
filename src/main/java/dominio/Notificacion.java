@@ -104,7 +104,10 @@ public class Notificacion implements Serializable {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-    
-    
-    
+
+    @Override
+    public String toString() {
+        return "Notificacion{" + "tipoNotificacion=" + tipoNotificacion + ", fechaHora=" + fechaHora + ", mensaje=" + mensaje + ", congestion=" + congestion + ", usuario=" + usuario + '}';
+    }
+
 }

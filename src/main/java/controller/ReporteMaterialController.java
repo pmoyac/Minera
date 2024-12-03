@@ -9,12 +9,14 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
 import java.util.List;
+import jwt.JwtUtil;
 
-@Path("/reportemateriales")
+@Path("/reportematerial")
 public class ReporteMaterialController {
 
     @PersistenceContext
@@ -23,7 +25,11 @@ public class ReporteMaterialController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response createReporteMaterial(ReporteMaterial reporteMaterial) {
+    public Response createReporteMaterial(ReporteMaterial reporteMaterial, @Context HttpHeaders headers) {
+        String token = headers.getHeaderString("Authorization");
+        if (token == null || !JwtUtil.validateToken(token.replace("Bearer ", ""))) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Token inválido").build();
+        }
         entityManager.persist(reporteMaterial);
         return Response.status(Response.Status.CREATED).entity(reporteMaterial).build();
     }
@@ -49,7 +55,11 @@ public class ReporteMaterialController {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response updateReporteMaterial(@PathParam("id") Long id, ReporteMaterial reporteMaterial) {
+    public Response updateReporteMaterial(@PathParam("id") Long id, ReporteMaterial reporteMaterial, @Context HttpHeaders headers) {
+        String token = headers.getHeaderString("Authorization");
+        if (token == null || !JwtUtil.validateToken(token.replace("Bearer ", ""))) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Token inválido").build();
+        }
         ReporteMaterial existingReporteMaterial = entityManager.find(ReporteMaterial.class, id);
         if (existingReporteMaterial == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -64,7 +74,11 @@ public class ReporteMaterialController {
     @DELETE
     @Path("/{id}")
     @Transactional
-    public Response deleteReporteMaterial(@PathParam("id") Long id) {
+    public Response deleteReporteMaterial(@PathParam("id") Long id, @Context HttpHeaders headers) {
+        String token = headers.getHeaderString("Authorization");
+        if (token == null || !JwtUtil.validateToken(token.replace("Bearer ", ""))) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Token inválido").build();
+        }
         ReporteMaterial reporteMaterial = entityManager.find(ReporteMaterial.class, id);
         if (reporteMaterial == null) {
             return Response.status(Response.Status.NOT_FOUND).build();

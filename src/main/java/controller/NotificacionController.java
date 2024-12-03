@@ -9,10 +9,13 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.HttpHeaders;
 
 import java.util.List;
+import jwt.JwtUtil;
 
 @Path("/notificaciones")
 public class NotificacionController {
@@ -23,7 +26,12 @@ public class NotificacionController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response createNotificacion(Notificacion notificacion) {
+    public Response createNotificacion(Notificacion notificacion, @Context HttpHeaders headers) {
+        String token = headers.getHeaderString("Authorization");
+        if (token == null || !JwtUtil.validateToken(token.replace("Bearer ", ""))) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Token inválido").build();
+        }
+        
         entityManager.persist(notificacion);
         return Response.status(Response.Status.CREATED).entity(notificacion).build();
     }
@@ -49,7 +57,13 @@ public class NotificacionController {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response updateNotificacion(@PathParam("id") Long id, Notificacion notificacion) {
+    public Response updateNotificacion(@PathParam("id") Long id, Notificacion notificacion, @Context HttpHeaders headers) {
+        
+        String token = headers.getHeaderString("Authorization");
+        if (token == null || !JwtUtil.validateToken(token.replace("Bearer ", ""))) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Token inválido").build();
+        }
+        
         Notificacion existingNotificacion = entityManager.find(Notificacion.class, id);
         if (existingNotificacion == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -65,7 +79,12 @@ public class NotificacionController {
     @DELETE
     @Path("/{id}")
     @Transactional
-    public Response deleteNotificacion(@PathParam("id") Long id) {
+    public Response deleteNotificacion(@PathParam("id") Long id, @Context HttpHeaders headers) {
+        
+        String token = headers.getHeaderString("Authorization");
+        if (token == null || !JwtUtil.validateToken(token.replace("Bearer ", ""))) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Token inválido").build();
+        }
         Notificacion notificacion = entityManager.find(Notificacion.class, id);
         if (notificacion == null) {
             return Response.status(Response.Status.NOT_FOUND).build();

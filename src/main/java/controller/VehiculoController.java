@@ -9,10 +9,12 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
 import java.util.List;
+import jwt.JwtUtil;
 
 @Path("/vehiculos")
 public class VehiculoController {
@@ -23,7 +25,13 @@ public class VehiculoController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response createVehiculo(Vehiculo vehiculo) {
+    public Response createVehiculo(Vehiculo vehiculo, @Context HttpHeaders headers) {
+        
+        String token = headers.getHeaderString("Authorization");
+        if (token == null || !JwtUtil.validateToken(token.replace("Bearer ", ""))) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Token inválido").build();
+        }
+        
         entityManager.persist(vehiculo);
         return Response.status(Response.Status.CREATED).entity(vehiculo).build();
     }
@@ -49,7 +57,13 @@ public class VehiculoController {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response updateVehiculo(@PathParam("id") Long id, Vehiculo vehiculo) {
+    public Response updateVehiculo(@PathParam("id") Long id, Vehiculo vehiculo, @Context HttpHeaders headers) {
+        
+        String token = headers.getHeaderString("Authorization");
+        if (token == null || !JwtUtil.validateToken(token.replace("Bearer ", ""))) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Token inválido").build();
+        }
+        
         Vehiculo existingVehiculo = entityManager.find(Vehiculo.class, id);
         if (existingVehiculo == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -62,7 +76,13 @@ public class VehiculoController {
     @DELETE
     @Path("/{id}")
     @Transactional
-    public Response deleteVehiculo(@PathParam("id") Long id) {
+    public Response deleteVehiculo(@PathParam("id") Long id, @Context HttpHeaders headers) {
+        
+        String token = headers.getHeaderString("Authorization");
+        if (token == null || !JwtUtil.validateToken(token.replace("Bearer ", ""))) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Token inválido").build();
+        }
+        
         Vehiculo vehiculo = entityManager.find(Vehiculo.class, id);
         if (vehiculo == null) {
             return Response.status(Response.Status.NOT_FOUND).build();

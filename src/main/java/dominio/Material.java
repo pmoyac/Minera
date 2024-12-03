@@ -75,7 +75,11 @@ public class Material implements Serializable {
     public void setValor(String valor) {
         this.valor = valor;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "Material{" + "material=" + material + ", descripcion=" + descripcion + ", valor=" + valor + '}';
+    }
+
     
 }

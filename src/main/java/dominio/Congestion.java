@@ -116,8 +116,12 @@ public class Congestion implements Serializable {
     public void setVehiculo(Vehiculo vehiculo) {
         this.vehiculo = vehiculo;
     }
-    
-    
-    
+
+    @Override
+    public String toString() {
+        return "Congestion{" + "fechaHora=" + fechaHora + ", localizacion=" + localizacion + ", nivelGravedad=" + nivelGravedad + ", causa=" + causa + ", semaforo=" + semaforo + ", vehiculo=" + vehiculo + '}';
+    }
+
+   
     
 }
