@@ -1,57 +1,61 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultar Reporte de Material</title>
-    <link rel="stylesheet" href="./css/styles.css">
-</head>
-<body>
-    <nav>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Consultar Reporte de Material</title>
+        <link rel="stylesheet" href="./css/styles.css">
+        <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+        <script src="./js/scripts.js" ></script>
+        <script src="./js/cerrarSesion.js" ></script>
+    </head>
+    <body>
+        <nav>
             <a href="index.html">Inicio</a>
             <a href="registrarcongestion.html">Registrar Congestión</a>
             <a href="congestion.html"> Consultar Congestiones </a>
             <a href="registrarreportematerial.html"> Registrar Reporte Material </a>
             <a href="reportematerial.html"> Consultar Reporte Material </a>
+            <button class="cerrarsesion">Cerrar Sesión</button>
         </nav>
-    <h1>Consultar Reportes de Material</h1>
-    <table id="reportesTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Fecha y Hora</th>
-                <th>Cantidad de Material</th>
-                <th>Vehículo</th>
-                <th>Material</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Los reportes se agregarán aquí dinámicamente -->
-        </tbody>
-    </table>
+        <h1>Consultar Reportes de Material</h1>
+        <table id="reportesTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Fecha y Hora</th>
+                    <th>Cantidad de Material</th>
+                    <th>Vehículo</th>
+                    <th>Material</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Los reportes se agregarán aquí dinámicamente -->
+            </tbody>
+        </table>
 
-    <script>
-        // Función para cargar reportes de material
-        function loadReportes() {
-            fetch('api/reportematerial/getReportes')
-                .then(response => response.json())
-                .then(data => {
-                    const reportesTableBody = document.getElementById('reportesTable').getElementsByTagName('tbody')[0];
-                    data.forEach(reporte => {
-                        const row = reportesTableBody.insertRow();
-                        row.insertCell(0).innerText = reporte.idreporteMaterial;
-                        row.insertCell(1).textContent = reporte.fechaHoraMaterial;
-                        row.insertCell(2).textContent = reporte.cantidadMaterial;
-                        row.insertCell(3).textContent = `ID: ${reporte.vehiculo.idvehiculo} - Estado: ${reporte.vehiculo.estado}`; 
-                        row.insertCell(4).textContent = `ID: ${reporte.material.idmaterial} - Material: ${reporte.material.material}`;
-                    });
-                })
-                .catch(error => console.error('Error al cargar los reportes de material:', error));
-        }
+        <script>
+            // Función para cargar reportes de material
+            function loadReportes() {
+                fetch('api/reportematerial/getReportes')
+                        .then(response => response.json())
+                        .then(data => {
+                            const reportesTableBody = document.getElementById('reportesTable').getElementsByTagName('tbody')[0];
+                            data.forEach(reporte => {
+                                const row = reportesTableBody.insertRow();
+                                row.insertCell(0).innerText = reporte.idreporteMaterial;
+                                row.insertCell(1).textContent = reporte.fechaHoraMaterial;
+                                row.insertCell(2).textContent = reporte.cantidadMaterial;
+                                row.insertCell(3).textContent = `ID: ${reporte.vehiculo.idvehiculo} - Estado: ${reporte.vehiculo.estado}`;
+                                row.insertCell(4).textContent = `ID: ${reporte.material.idmaterial} - Material: ${reporte.material.material}`;
+                            });
+                        })
+                        .catch(error => console.error('Error al cargar los reportes de material:', error));
+            }
 
-        window.onload = function() {
-            loadReportes();
-        };
-    </script>
-</body>
+            window.onload = function () {
+                loadReportes();
+            };
+        </script>
+    </body>
 </html>

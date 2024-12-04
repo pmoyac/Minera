@@ -16,7 +16,7 @@ import jakarta.ws.rs.core.Response;
 import java.util.List;
 import jwt.JwtUtil;
 
-@Path("/semaforos")
+@Path("semaforos")
 public class SemaforoController {
 
     @PersistenceContext
@@ -25,6 +25,7 @@ public class SemaforoController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
+    @Path("crear")
     public Response createSemaforo(Semaforo semaforo, @Context HttpHeaders headers) {
         
         String token = headers.getHeaderString("Authorization");
@@ -37,12 +38,13 @@ public class SemaforoController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("getSemaforos")
     public List<Semaforo> getAllSemaforos() {
         return entityManager.createQuery("SELECT v FROM Semaforo v", Semaforo.class).getResultList();
     }
 
     @GET
-    @Path("/{id}")
+    @Path("getSemaforo")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSemaforo(@PathParam("id") Long id) {
         Semaforo semaforo = entityManager.find(Semaforo.class, id);
@@ -53,7 +55,7 @@ public class SemaforoController {
     }
 
     @PUT
-    @Path("/{id}")
+    @Path("actualizar")
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
     public Response updateSemaforo(@PathParam("id") Long id, Semaforo semaforo, @Context HttpHeaders headers) {
@@ -73,7 +75,7 @@ public class SemaforoController {
     }
 
     @DELETE
-    @Path("/{id}")
+    @Path("borrar")
     @Transactional
     public Response deleteSemaforo(@PathParam("id") Long id, @Context HttpHeaders headers) {
         String token = headers.getHeaderString("Authorization");

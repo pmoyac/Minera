@@ -5,6 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Registrar Reporte de Material</title>
         <link rel="stylesheet" href="./css/styles.css">
+        <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+        <script src="./js/scripts.js" ></script>
+        <script src="./js/cerrarSesion.js" ></script>
     </head>
     <body>
         <nav>
@@ -13,6 +16,7 @@
             <a href="congestion.html"> Consultar Congestiones </a>
             <a href="registrarreportematerial.html"> Registrar Reporte Material </a>
             <a href="reportematerial.html"> Consultar Reporte Material </a>
+            <button class="cerrarsesion">Cerrar Sesión</button>
         </nav>
         <h1>Registrar Reporte de Material</h1>
         <form id="reporteMaterialForm">
@@ -84,7 +88,7 @@
                 const material = document.getElementById('material').value;
 
                 // Recuperar el token del almacenamiento local 
-                const token = localStorage.getItem("token");  
+                const token = localStorage.getItem("token");
 
                 // Verificar que el token esté disponible
                 if (!token) {
@@ -96,7 +100,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + token 
+                        'Authorization': 'Bearer ' + token
                     },
                     body: JSON.stringify({
                         fechaHoraMaterial: fechaHoraMaterial,
