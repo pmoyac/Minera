@@ -4,10 +4,13 @@
  */
 package controller;
 
+import dominio.Material;
 import dominio.ReporteMaterial;
+import dominio.Vehiculo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import jakarta.transaction.Transactional.TxType;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -16,26 +19,50 @@ import jakarta.ws.rs.core.Response;
 import java.util.List;
 import jwt.JwtUtil;
 
-@Path("/reportematerial")
+@Path("reportematerial")
 public class ReporteMaterialController {
 
-    @PersistenceContext
+    @PersistenceContext(unitName = "miUnidadDePersistencia")
     private EntityManager entityManager;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Path("CrearReportematerial")
     @Transactional
     public Response createReporteMaterial(ReporteMaterial reporteMaterial, @Context HttpHeaders headers) {
+        // Obtener el token de autorización
         String token = headers.getHeaderString("Authorization");
         if (token == null || !JwtUtil.validateToken(token.replace("Bearer ", ""))) {
             return Response.status(Response.Status.UNAUTHORIZED).entity("Token inválido").build();
         }
+
+        // Recuperar los objetos Vehiculo y Material usando sus IDs
+        Long idVehiculo = reporteMaterial.getVehiculo().getIdvehiculo(); // Obtener solo el ID del vehículo
+        Long idMaterial = reporteMaterial.getMaterial().getIdmaterial(); // Obtener solo el ID del material
+
+        // Buscar en la base de datos los objetos completos de Vehiculo y Material
+        Vehiculo vehiculo = entityManager.find(Vehiculo.class, idVehiculo);
+        Material material = entityManager.find(Material.class, idMaterial);
+
+        // Verificar si los objetos fueron encontrados
+        if (vehiculo == null || material == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Vehículo o material no encontrado").build();
+        }
+
+        // Asociar los objetos Vehiculo y Material con el reporte
+        reporteMaterial.setVehiculo(vehiculo);
+        reporteMaterial.setMaterial(material);
+
+        // Persistir el reporte
         entityManager.persist(reporteMaterial);
+
         return Response.status(Response.Status.CREATED).entity(reporteMaterial).build();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("getReportes")
     public List<ReporteMaterial> getAllReporteMaterials() {
         return entityManager.createQuery("SELECT v FROM ReporteMaterial v", ReporteMaterial.class).getResultList();
     }
@@ -54,7 +81,7 @@ public class ReporteMaterialController {
     @PUT
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Transactional
+
     public Response updateReporteMaterial(@PathParam("id") Long id, ReporteMaterial reporteMaterial, @Context HttpHeaders headers) {
         String token = headers.getHeaderString("Authorization");
         if (token == null || !JwtUtil.validateToken(token.replace("Bearer ", ""))) {
@@ -73,7 +100,7 @@ public class ReporteMaterialController {
 
     @DELETE
     @Path("/{id}")
-    @Transactional
+
     public Response deleteReporteMaterial(@PathParam("id") Long id, @Context HttpHeaders headers) {
         String token = headers.getHeaderString("Authorization");
         if (token == null || !JwtUtil.validateToken(token.replace("Bearer ", ""))) {

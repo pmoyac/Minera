@@ -16,15 +16,16 @@ import jakarta.ws.rs.core.Response;
 import java.util.List;
 import jwt.JwtUtil;
 
-@Path("/vehiculos")
+@Path("vehiculos")
 public class VehiculoController {
 
-    @PersistenceContext
+    @PersistenceContext(unitName = "miUnidadDePersistencia")
     private EntityManager entityManager;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
+    @Path("registrar")
     public Response createVehiculo(Vehiculo vehiculo, @Context HttpHeaders headers) {
         
         String token = headers.getHeaderString("Authorization");
@@ -38,12 +39,13 @@ public class VehiculoController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("getVehiculos")
     public List<Vehiculo> getAllVehiculos() {
         return entityManager.createQuery("SELECT v FROM Vehiculo v", Vehiculo.class).getResultList();
     }
 
     @GET
-    @Path("/{id}")
+    @Path("getVehiculo")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getVehiculo(@PathParam("id") Long id) {
         Vehiculo vehiculo = entityManager.find(Vehiculo.class, id);
@@ -54,7 +56,7 @@ public class VehiculoController {
     }
 
     @PUT
-    @Path("/{id}")
+    @Path("actualizarVehiculo")
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
     public Response updateVehiculo(@PathParam("id") Long id, Vehiculo vehiculo, @Context HttpHeaders headers) {
@@ -74,7 +76,7 @@ public class VehiculoController {
     }
 
     @DELETE
-    @Path("/{id}")
+    @Path("borrarVehiculo")
     @Transactional
     public Response deleteVehiculo(@PathParam("id") Long id, @Context HttpHeaders headers) {
         

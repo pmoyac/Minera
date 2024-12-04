@@ -4,6 +4,7 @@
  */
 package dominio;
 
+import jakarta.persistence.CascadeType;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import jakarta.persistence.Column;

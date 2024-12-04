@@ -4,13 +4,16 @@
  */
 package dominio;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import java.io.Serializable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.List;
 
 /**
  *
@@ -30,6 +33,10 @@ public class Vehiculo implements Serializable {
     
     @Column(name = "estado", nullable = false, length = 15)
     private String estado;
+    
+    @OneToMany(mappedBy = "vehiculo")
+    @JsonbTransient
+    private List<ReporteMaterial> reportesMaterial;
 
     public Vehiculo() {
     }

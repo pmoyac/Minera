@@ -4,9 +4,16 @@
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <jta-data-source>jdbc/miDatasource</jta-data-source>
     <class>dominio.Usuario</class>
+    <class>dominio.Congestion</class>
+    <class>dominio.Material</class>
+    <class>dominio.Notificacion</class>
+    <class>dominio.ReporteMaterial</class>
+    <class>dominio.Semaforo</class>
+    <class>dominio.Vehiculo</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
     </properties>
   </persistence-unit>
 </persistence>

@@ -4,13 +4,16 @@
  */
 package dominio;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import java.io.Serializable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.List;
 
 /**
  *
@@ -33,6 +36,10 @@ public class Material implements Serializable {
     
     @Column(name = "valor", nullable = false, length = 45)
     private String valor;
+    
+    @OneToMany(mappedBy = "material")
+    @JsonbTransient
+    private List<ReporteMaterial> reportesMaterial;
 
     public Material() {
     }
@@ -43,6 +50,24 @@ public class Material implements Serializable {
         this.descripcion = descripcion;
         this.valor = valor;
     }
+
+    public Material(String material, String descripcion, String valor, List<ReporteMaterial> reportesMaterial) {
+        this.material = material;
+        this.descripcion = descripcion;
+        this.valor = valor;
+        this.reportesMaterial = reportesMaterial;
+    }
+
+    public Material(Long idmaterial, String material, String descripcion, String valor, List<ReporteMaterial> reportesMaterial) {
+        this.idmaterial = idmaterial;
+        this.material = material;
+        this.descripcion = descripcion;
+        this.valor = valor;
+        this.reportesMaterial = reportesMaterial;
+    }
+    
+    
+    
 
     public Long getIdmaterial() {
         return idmaterial;
@@ -75,6 +100,16 @@ public class Material implements Serializable {
     public void setValor(String valor) {
         this.valor = valor;
     }
+
+    public List<ReporteMaterial> getReportesMaterial() {
+        return reportesMaterial;
+    }
+
+    public void setReportesMaterial(List<ReporteMaterial> reportesMaterial) {
+        this.reportesMaterial = reportesMaterial;
+    }
+    
+    
 
     @Override
     public String toString() {

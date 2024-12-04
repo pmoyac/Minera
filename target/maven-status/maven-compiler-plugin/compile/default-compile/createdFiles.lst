@@ -1,12 +1,17 @@
 dominio\Material.class
 dominio\Vehiculo.class
 jwt\JwtUtil.class
+controller\ReporteMaterialController.class
 dominio\Usuario.class
 minera\minera\JakartaRestConfiguration.class
 token\TokenResponse.class
 dominio\Semaforo.class
+controller\NotificacionController.class
+controller\MaterialController.class
 dominio\ReporteMaterial.class
 controller\UsuarioAuthController.class
+controller\CongestionController.class
+controller\SemaforoController.class
 dominio\Notificacion.class
 minera\minera\resources\JakartaEE10Resource.class
 controller\VehiculoController.class

@@ -33,7 +33,7 @@
     <script>
         // Función para cargar reportes de material
         function loadReportes() {
-            fetch('api/reportematerial')
+            fetch('api/reportematerial/getReportes')
                 .then(response => response.json())
                 .then(data => {
                     const reportesTableBody = document.getElementById('reportesTable').getElementsByTagName('tbody')[0];
