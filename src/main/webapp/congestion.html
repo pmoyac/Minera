@@ -1,54 +1,60 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultar Congestiones</title>
-    <link rel="stylesheet" href="./css/styles.css">
-</head>
-<body>
-    <nav>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Consultar Congestiones</title>
+        <link rel="stylesheet" href="./css/styles.css">
+    </head>
+    <body>
+        <nav>
             <a href="index.html">Inicio</a>
             <a href="registrarcongestion.html">Registrar Congestión</a>
             <a href="congestion.html"> Consultar Congestiones </a>
             <a href="registrarreportematerial.html"> Registrar Reporte Material </a>
             <a href="reportematerial.html"> Consultar Reporte Material </a>
         </nav>
-    <h1>Consultar Congestiones</h1>
-    <table id="congestionTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Fecha y Hora</th>
-                <th>Localización</th>
-                <th>Nivel de Gravedad</th>
-                <th>Causa</th>
-                <th>Semáforo</th>
-                <th>Vehículo</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Las congestiones se agregarán aquí dinámicamente -->
-        </tbody>
-    </table>
+        <h1>Consultar Congestiones</h1>
+        <table id="congestionTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Fecha y Hora</th>
+                    <th>Localización</th>
+                    <th>Nivel de Gravedad</th>
+                    <th>Causa</th>
+                    <th>Semáforo</th>
+                    <th>Vehículo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Las congestiones se agregarán aquí dinámicamente -->
+            </tbody>
+        </table>
 
-    <script>
-        fetch('api/congestiones')
-            .then(response => response.json())
-            .then(data => {
-                const tableBody = document.getElementById('congestionTable').getElementsByTagName('tbody')[0];
-                data.forEach(congestion => {
-                    const row = tableBody.insertRow();
-                    row.insertCell(0).innerText = congestion.idcongestion;
-                    row.insertCell(1).innerText = new Date(congestion.fechaHora).toLocaleString();
-                    row.insertCell(2).innerText = congestion.localizacion;
-                    row.insertCell(3).innerText = congestion.nivelGravedad;
-                    row.insertCell(4).innerText = congestion.causa;
-                    row.insertCell(5).innerText = congestion.semaforo.id;
-                    row.insertCell(6).innerText = congestion.vehiculo.id;
-                });
-            })
-            .catch(error => console.error('Error al cargar las congestiones:', error));
-    </script>
-</body>
+        <script>
+            function loadCongestiones() {
+                fetch('api/congestiones/getCongestiones')
+                        .then(response => response.json())
+                        .then(data => {
+                            const congestionTableBody = document.getElementById('congestionTable').getElementsByTagName('tbody')[0];
+                            data.forEach(congestion => {
+                                const row = congestionTableBody.insertRow();
+                                row.insertCell(0).innerText = congestion.idcongestion;
+                                row.insertCell(1).textContent = congestion.fechaHora;
+                                row.insertCell(2).textContent = congestion.localizacion;
+                                row.insertCell(3).textContent = congestion.nivelGravedad;
+                                row.insertCell(4).textContent = congestion.causa;
+                                row.insertCell(5).textContent = `ID: ${congestion.semaforo.idsemaforo} - Estado: ${congestion.semaforo.estado}`;
+                                row.insertCell(6).textContent = `ID: ${congestion.vehiculo.idvehiculo} - Estado: ${congestion.vehiculo.estado}`;
+                            });
+                        })
+                        .catch(error => console.error('Error al cargar las congestiones:', error));
+            }
+            window.onload = function () {
+                loadCongestiones();
+            };
+
+        </script>
+    </body>
 </html>

@@ -1,122 +1,133 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrar Congestión</title>
-    <link rel="stylesheet" href="./css/styles.css">
-</head>
-<body>
-    <nav>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Registrar Congestión</title>
+        <link rel="stylesheet" href="./css/styles.css">
+    </head>
+    <body>
+        <nav>
             <a href="index.html">Inicio</a>
             <a href="registrarcongestion.html">Registrar Congestión</a>
             <a href="congestion.html"> Consultar Congestiones </a>
             <a href="registrarreportematerial.html"> Registrar Reporte Material </a>
             <a href="reportematerial.html"> Consultar Reporte Material </a>
         </nav>
-    <h1>Registrar Congestión</h1>
-    <form id="congestionForm">
-        <label for="fechaHora">Fecha y Hora:</label>
-        <input type="datetime-local" id="fechaHora" name="fechaHora" required>
+        <h1>Registrar Congestión</h1>
+        <form id="congestionForm">
+            <label for="fechaHora">Fecha y Hora:</label>
+            <input type="datetime-local" id="fechaHora" name="fechaHora" required>
 
-        <label for="localizacion">Localización:</label>
-        <input type="text" id="localizacion" name="localizacion" required>
+            <label for="localizacion">Localización:</label>
+            <input type="text" id="localizacion" name="localizacion" required>
 
-        <label for="nivelGravedad">Nivel de Gravedad:</label>
-        <input type="text" id="nivelGravedad" name="nivelGravedad" required>
+            <label for="nivelGravedad">Nivel de Gravedad:</label>
+            <input type="text" id="nivelGravedad" name="nivelGravedad" required>
 
-        <label for="causa">Causa:</label>
-        <input type="text" id="causa" name="causa" required>
+            <label for="causa">Causa:</label>
+            <input type="text" id="causa" name="causa" required>
 
-        <label for="semaforo">Semáforo:</label>
-        <select id="semaforo" name="semaforo" required>
-            <option value="">Seleccione un semáforo</option>
-            <!-- Las opciones de semáforos se agregarán aquí dinámicamente -->
-        </select>
+            <label for="semaforo">Semáforo:</label>
+            <select id="semaforo" name="semaforo" required>
+                <option value="">Seleccione un semáforo</option>
+                <!-- Las opciones de semáforos se agregarán aquí dinámicamente -->
+            </select>
 
-        <label for="vehiculo">Vehículo:</label>
-        <select id="vehiculo" name="vehiculo" required>
-            <option value="">Seleccione un vehículo</option>
-            <!-- Las opciones de vehículos se agregarán aquí dinámicamente -->
-        </select>
+            <label for="vehiculo">Vehículo:</label>
+            <select id="vehiculo" name="vehiculo" required>
+                <option value="">Seleccione un vehículo</option>
+                <!-- Las opciones de vehículos se agregarán aquí dinámicamente -->
+            </select>
 
-        <button type="submit">Registrar Congestión</button>
-    </form>
+            <button type="submit">Registrar Congestión</button>
+        </form>
 
 
-    <script>
-        
-        function loadSemaforos() {
-            fetch('api/semaforos')
-                .then(response => response.json())
-                .then(data => {
-                    const semaforoSelect = document.getElementById('semaforo');
-                    data.forEach(semaforo => {
-                        const option = document.createElement('option');
-                        option.value = semaforo.idsemaforo;
-                        option.textContent = `ID: ${semaforo.idsemaforo} - Estado: ${semaforo.estado}`;
-                        semaforoSelect.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Error al cargar los semáforos:', error));
-        }
+        <script>
 
-        
-        function loadVehiculos() {
-            fetch('api/vehiculos')
-                .then(response => response.json())
-                .then(data => {
-                    const vehiculoSelect = document.getElementById('vehiculo');
-                    data.forEach(vehiculo => {
-                        const option = document.createElement('option');
-                        option.value = vehiculo.idvehiculo;
-                        option.textContent = `ID: ${vehiculo.idvehiculo} - Posición: ${vehiculo.posicionActual} - Estado: ${vehiculo.estado}`;
-                        vehiculoSelect.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Error al cargar los vehículos:', error));
-        }
+            function loadSemaforos() {
+                fetch('api/semaforos')
+                        .then(response => response.json())
+                        .then(data => {
+                            const semaforoSelect = document.getElementById('semaforo');
+                            data.forEach(semaforo => {
+                                const option = document.createElement('option');
+                                option.value = semaforo.idsemaforo;
+                                option.textContent = `ID: ${semaforo.idsemaforo} - Estado: ${semaforo.estado}`;
+                                semaforoSelect.appendChild(option);
+                            });
+                        })
+                        .catch(error => console.error('Error al cargar los semáforos:', error));
+            }
 
-        
-        window.onload = function() {
-            loadSemaforos();
-            loadVehiculos();
-        };
 
-        document.getElementById('congestionForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+            function loadVehiculos() {
+                fetch('api/vehiculos/getVehiculos')
+                        .then(response => response.json())
+                        .then(data => {
+                            const vehiculoSelect = document.getElementById('vehiculo');
+                            data.forEach(vehiculo => {
+                                const option = document.createElement('option');
+                                option.value = vehiculo.idvehiculo;
+                                option.textContent = `ID: ${vehiculo.idvehiculo} - Posición: ${vehiculo.posicionActual} - Estado: ${vehiculo.estado}`;
+                                vehiculoSelect.appendChild(option);
+                            });
+                        })
+                        .catch(error => console.error('Error al cargar los vehículos:', error));
+            }
 
-            const fechaHora = document.getElementById('fechaHora').value;
-            const localizacion = document.getElementById('localizacion').value;
-            const nivelGravedad = document.getElementById('nivelGravedad').value;
-            const causa = document.getElementById('causa').value;
-            const semaforo = document.getElementById('semaforo').value;
-            const vehiculo = document.getElementById('vehiculo').value;
 
-            fetch('api/congestiones', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    fechaHora: fechaHora,
-                    localizacion: localizacion,
-                    nivelGravedad: nivelGravedad,
-                    causa: causa,
-                    semaforo: { id: semaforo },  
-                    vehiculo: { id: vehiculo }
-                })
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert('Congestión registrada exitosamente');
-                    document.getElementById('congestionForm').reset();
-                } else {
-                    alert('Error al registrar la congestión');
+            window.onload = function () {
+                loadSemaforos();
+                loadVehiculos();
+            };
+
+            document.getElementById('congestionForm').addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const fechaHora = document.getElementById('fechaHora').value;
+                const localizacion = document.getElementById('localizacion').value;
+                const nivelGravedad = document.getElementById('nivelGravedad').value;
+                const causa = document.getElementById('causa').value;
+                const semaforo = document.getElementById('semaforo').value;
+                const vehiculo = document.getElementById('vehiculo').value;
+
+                // Recuperar el token del almacenamiento local 
+                const token = localStorage.getItem("token");
+
+                // Verificar que el token esté disponible
+                if (!token) {
+                    alert("Token de autenticación no disponible");
+                    return;
                 }
-            })
-            .catch(error => console.error('Error:', error));
-        });
-    </script>
-</body>
+
+
+                fetch('api/congestiones/CrearCongestion', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({
+                        fechaHora: fechaHora,
+                        localizacion: localizacion,
+                        nivelGravedad: nivelGravedad,
+                        causa: causa,
+                        semaforo: {idsemaforo: semaforo},
+                        vehiculo: {idvehiculo: vehiculo}
+                    })
+                })
+                        .then(response => {
+                            if (response.ok) {
+                                alert('Congestión registrada exitosamente');
+                                document.getElementById('congestionForm').reset();
+                            } else {
+                                alert('Error al registrar la congestión');
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+            });
+        </script>
+    </body>
 </html>

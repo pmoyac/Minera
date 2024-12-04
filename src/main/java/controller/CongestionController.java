@@ -5,6 +5,8 @@
 package controller;
 
 import dominio.Congestion;
+import dominio.Semaforo;
+import dominio.Vehiculo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -17,32 +19,54 @@ import jakarta.ws.rs.core.Response;
 import java.util.List;
 import jwt.JwtUtil;
 
-@Path("/congestiones")
+@Path("congestiones")
 public class CongestionController {
 
-    @PersistenceContext
+    @PersistenceContext(unitName = "miUnidadDePersistencia")
     private EntityManager entityManager;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
+    @Path("CrearCongestion")
     public Response createCongestion(Congestion congestion, @Context HttpHeaders headers) {
         String token = headers.getHeaderString("Authorization");
         if (token == null || !JwtUtil.validateToken(token.replace("Bearer ", ""))) {
             return Response.status(Response.Status.UNAUTHORIZED).entity("Token inválido").build();
         }
+        
+        Long idSemaforo = congestion.getSemaforo().getIdsemaforo(); // Obtener solo el ID del vehículo
+        Long idVehiculo= congestion.getVehiculo().getIdvehiculo(); // Obtener solo el ID del material
+
+        // Buscar en la base de datos los objetos completos de Vehiculo y Material
+        Semaforo semaforo = entityManager.find(Semaforo.class, idSemaforo);
+        Vehiculo vehiculo = entityManager.find(Vehiculo.class, idVehiculo);
+        
+
+        // Verificar si los objetos fueron encontrados
+        if (semaforo == null || vehiculo == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Semaforo o vehículo no encontrado").build();
+        }
+
+        // Asociar los objetos Semaforo y Vehiculo con el reporte
+        congestion.setSemaforo(semaforo);
+        congestion.setVehiculo(vehiculo);
+        
+        
         entityManager.persist(congestion);
         return Response.status(Response.Status.CREATED).entity(congestion).build();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("getCongestiones")
     public List<Congestion> getAllCongestions() {
         return entityManager.createQuery("SELECT v FROM Congestion v", Congestion.class).getResultList();
     }
 
     @GET
-    @Path("/{id}")
+    @Path("getCongestion")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCongestion(@PathParam("id") Long id) {
         Congestion congestion = entityManager.find(Congestion.class, id);
@@ -53,7 +77,7 @@ public class CongestionController {
     }
 
     @PUT
-    @Path("/{id}")
+    @Path("actualizarCongestion")
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
     public Response updateCongestion(@PathParam("id") Long id, Congestion congestion, @Context HttpHeaders headers) {
@@ -75,7 +99,7 @@ public class CongestionController {
     }
 
     @DELETE
-    @Path("/{id}")
+    @Path("borrarCongestion")
     @Transactional
     public Response deleteCongestion(@PathParam("id") Long id, @Context HttpHeaders headers) {
         String token = headers.getHeaderString("Authorization");

@@ -39,11 +39,11 @@
                     const reportesTableBody = document.getElementById('reportesTable').getElementsByTagName('tbody')[0];
                     data.forEach(reporte => {
                         const row = reportesTableBody.insertRow();
-                        row.insertCell(0).innerText = reporte.idreporte;
+                        row.insertCell(0).innerText = reporte.idreporteMaterial;
                         row.insertCell(1).textContent = reporte.fechaHoraMaterial;
                         row.insertCell(2).textContent = reporte.cantidadMaterial;
-                        row.insertCell(3).textContent = `ID: ${reporte.vehiculo.id} - Estado: ${reporte.vehiculo.estado}`; 
-                        row.insertCell(4).textContent = `ID: ${reporte.material.id} - Material: ${reporte.material.material}`;
+                        row.insertCell(3).textContent = `ID: ${reporte.vehiculo.idvehiculo} - Estado: ${reporte.vehiculo.estado}`; 
+                        row.insertCell(4).textContent = `ID: ${reporte.material.idmaterial} - Material: ${reporte.material.material}`;
                     });
                 })
                 .catch(error => console.error('Error al cargar los reportes de material:', error));

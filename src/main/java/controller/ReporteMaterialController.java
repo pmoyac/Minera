@@ -35,7 +35,7 @@ public class ReporteMaterialController {
         if (token == null || !JwtUtil.validateToken(token.replace("Bearer ", ""))) {
             return Response.status(Response.Status.UNAUTHORIZED).entity("Token inválido").build();
         }
-
+        
         // Recuperar los objetos Vehiculo y Material usando sus IDs
         Long idVehiculo = reporteMaterial.getVehiculo().getIdvehiculo(); // Obtener solo el ID del vehículo
         Long idMaterial = reporteMaterial.getMaterial().getIdmaterial(); // Obtener solo el ID del material
@@ -68,7 +68,7 @@ public class ReporteMaterialController {
     }
 
     @GET
-    @Path("/{id}")
+    @Path("getReporte")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getReporteMaterial(@PathParam("id") Long id) {
         ReporteMaterial reporteMaterial = entityManager.find(ReporteMaterial.class, id);
@@ -79,7 +79,7 @@ public class ReporteMaterialController {
     }
 
     @PUT
-    @Path("/{id}")
+    @Path("actualizarReporte")
     @Consumes(MediaType.APPLICATION_JSON)
 
     public Response updateReporteMaterial(@PathParam("id") Long id, ReporteMaterial reporteMaterial, @Context HttpHeaders headers) {
@@ -99,7 +99,7 @@ public class ReporteMaterialController {
     }
 
     @DELETE
-    @Path("/{id}")
+    @Path("borrarReporte")
 
     public Response deleteReporteMaterial(@PathParam("id") Long id, @Context HttpHeaders headers) {
         String token = headers.getHeaderString("Authorization");

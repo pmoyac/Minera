@@ -37,6 +37,10 @@ public class Vehiculo implements Serializable {
     @OneToMany(mappedBy = "vehiculo")
     @JsonbTransient
     private List<ReporteMaterial> reportesMaterial;
+    
+    @OneToMany(mappedBy = "vehiculo")
+    @JsonbTransient
+    private List<Congestion> congestion;
 
     public Vehiculo() {
     }

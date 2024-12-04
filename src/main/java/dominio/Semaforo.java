@@ -4,13 +4,16 @@
  */
 package dominio;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import java.io.Serializable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.List;
 
 /**
  *
@@ -31,6 +34,10 @@ public class Semaforo implements Serializable {
     @Column(name = "posicionGeografica", nullable = false, length = 100)
     private String posicionGeografica;
 
+    @OneToMany(mappedBy = "semaforo")
+    @JsonbTransient
+    private List<Congestion> congestion;
+    
     public Semaforo() {
     }
 
